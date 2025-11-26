@@ -2,7 +2,7 @@
 VerifyBot was created to overhaul member verification for my Discord server known as Original People. New server members could fill out a Google form to apply for verification, and server admins would use the bot to either approve or deny applications. Upon being approved, new members receive a nickname and the roles they requested in the form.
 
 ## Technologies
-[![My Skills](https://skillicons.dev/icons?i=replit,nodejs,discordjs,express,javascript,html&theme=light)](https://skillicons.dev)  
+[![My Skills](https://skillicons.dev/icons?i=replit,nodejs,discordjs,express,javascript,html,discord,bots&theme=light)](https://skillicons.dev)  
 **Including:** UptimeRobot to ping the server for 99% uptime
 
 ## Features
