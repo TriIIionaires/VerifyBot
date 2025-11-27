@@ -12,4 +12,5 @@ VerifyBot was created to overhaul member verification for my Discord server know
 - **Reaction Input:** Server admins can approve or reject a verification application using emoji reactions.
 
 ## Video Demo
-Coming soon
+https://github.com/user-attachments/assets/0f923545-17fe-47c5-993b-09abb4dbcc51
+
