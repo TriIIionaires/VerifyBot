@@ -7,6 +7,7 @@ async function AcceptUser(data, member) {
   const giveRoles = [];
   giveRoles.push('Verified');
   giveRoles.push(`${data.Q3} Student`);
+  givesRoles.push(data.Q4);
 
   if (data.Q6) {
     for (let i = 0; i < data.Q6.length; i++) {
@@ -118,8 +119,8 @@ async function postHandler (req, res, Client) {
   const channel = await Client.channels.cache.get('764322751620055040');
   const logs = await Client.channels.cache.get('764322768908845097');
   await channel.guild.members.fetch();
-  const user = await Client.users.cache.find(user => user.tag == data.Q2);
-  const member = await channel.guild.members.cache.get(user.id);
+  const member = await channel.guild.members.cache.find(m => m.user.username.toLowerCase() === data.Q2);
+  const user = member.user;
   const name = FilterName(data.Q1);
 
   if (user && name) {
