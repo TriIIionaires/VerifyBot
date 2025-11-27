@@ -7,7 +7,7 @@ async function AcceptUser(data, member) {
   const giveRoles = [];
   giveRoles.push('Verified');
   giveRoles.push(`${data.Q3} Student`);
-  givesRoles.push(data.Q4);
+  giveRoles.push(data.Q4);
 
   if (data.Q6) {
     for (let i = 0; i < data.Q6.length; i++) {
@@ -21,12 +21,10 @@ async function AcceptUser(data, member) {
 
   for (let i = 0; i < giveRoles.length; i++) {
     giveRoles[i] = await member.guild.roles.cache.find(role => role.name === giveRoles[i]);
-    await member.roles.add(`${giveRoles[i].id}`);
-    
-    if (i == (giveRoles.length-1)) {
-      await member.setNickname(data.Q1); 
-    };
+    await member.roles.add(giveRoles[i]);
   };
+
+  await member.setNickname(data.Q1); 
 };
 
 async function DeclineUser(member) {
@@ -34,7 +32,7 @@ async function DeclineUser(member) {
     .catch(console.error);
 };
 
-async function AddRow(data) {
+async function AddRow(data, id) {
   const doc = new GoogleSpreadsheet('1CFbXkv6bXd8-evYZxxeT1uXJ6suk74qV6K9y3ZgngXU');
   await doc.useServiceAccountAuth({
     client_email: process.env.CLIENT_EMAIL,
@@ -43,10 +41,11 @@ async function AddRow(data) {
 
   await doc.loadInfo();
 
-  const sheetData = doc.sheetsByTitle['Copy of Verification Data'];
+  const sheetData = doc.sheetsByTitle['Verification Data'];
   
   const row = await sheetData.addRow({
     'Timestamp': `${data.Timestamp}`,
+    'Discord ID': `${id}`,
     'Name': `${data.Q1}`,
     'Discord Username': `${data.Q2}`,
     'School': `${data.Q3} Student`,
@@ -68,13 +67,13 @@ async function UpdateRow(row, status, admin) {
 
   await doc.loadInfo();
 
-  const sheet = doc.sheetsByTitle['Copy of Verification Data'];
+  const sheet = doc.sheetsByTitle['Verification Data'];
   await sheet.loadCells();
 
-  const cellStatus = sheet.getCellByA1(`H${row}`);
+  const cellStatus = sheet.getCellByA1(`I${row}`);
   cellStatus.value = `${status}`;
 
-  const cellAdmin = sheet.getCellByA1(`I${row}`);
+  const cellAdmin = sheet.getCellByA1(`J${row}`);
   cellAdmin.value = `${admin}`;
 
   await cellStatus.save();
@@ -113,7 +112,7 @@ function FindRoles(array, comma) {
 
 async function postHandler (req, res, Client) {
   console.log(`HTTP POST REQUEST\nstatusCode: ${res.statusCode}`);
-  res.redirect('http://localhost:3000/');
+  res.redirect('https://0e22768ca668.ngrok-free.app');
 
   const data = req.body;
   const channel = await Client.channels.cache.get('764322751620055040');
@@ -136,7 +135,7 @@ async function postHandler (req, res, Client) {
       )
       .setTimestamp()
       .setFooter('Property of Original People™');
-    const row = await AddRow(data);
+    const row = await AddRow(data, user.id);
     const message = await channel.send(RequestEmbed);
     await message.react('755585504057229504') //Smooth checkmark
       .catch(console.error);
@@ -149,7 +148,7 @@ async function postHandler (req, res, Client) {
             .setColor('#43b581')
             .setDescription(`User: **<@!${user.id}>**\nName: **${name}**\nStatus: **Accepted by <@!${admin.id}>**`);
         AcceptUser(data, member);
-        UpdateRow(row, 'Accepted', admin.tag);
+        UpdateRow(row, 'Accepted', admin.username);
         message.reactions.removeAll()
           .catch(console.error);
         message.edit(RequestEmbed); 
@@ -158,7 +157,7 @@ async function postHandler (req, res, Client) {
           .setColor('#ff470f')
           .setDescription(`User: **<@!${user.id}>**\nName: **${name}**\nStatus: **Declined by <@!${admin.id}>**`);
         DeclineUser(member);
-        UpdateRow(row, 'Declined', admin.tag);
+        UpdateRow(row, 'Declined', admin.username);
         message.reactions.removeAll()
           .catch(console.error);
         message.edit(RequestEmbed);

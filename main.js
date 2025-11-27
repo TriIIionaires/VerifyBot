@@ -35,7 +35,7 @@ app.get('/request/post', (req, res) => {
   res.sendFile(__dirname + '/public/request.html');
 });
 
-app.post('/request.html', async function (req, res) {
+app.post('/request/post', async function (req, res) {
   postHandler(req, res, Client);
 });
 
